@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+
+# macOS cruft
+.DS_Store
+
+# Build outputs
+/dist/
+src-tauri/target/
+
+# Generated data files（例如真实抽签记录、导入花名册）
+data/*.json
+data/*.xlsx
+
+# Rust auxiliary files
+src-tauri/.cargo-lock

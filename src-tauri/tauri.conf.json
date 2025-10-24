@@ -1,0 +1,50 @@
+{
+  "package": {
+    "productName": "DrawLots",
+    "version": "0.1.0"
+  },
+  "build": {
+    "beforeBuildCommand": "npm run build:web",
+    "beforeDevCommand": "",
+    "devPath": "../",
+    "distDir": "../dist",
+    "withGlobalTauri": true
+  },
+  "tauri": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "员工满意度调查抽选系统",
+        "width": 1440,
+        "height": 900,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "bundle": {
+      "active": true,
+      "targets": ["app"],
+      "identifier": "com.gdhp.drawlots",
+      "icon": [
+        "../icons/icon.icns",
+        "../icons/icon_512.png",
+        "../icons/icon_256.png",
+        "../icons/icon_128.png",
+        "../icons/icon_64.png",
+        "../icons/icon_32.png"
+      ]
+    },
+    "security": {
+      "csp": null
+    },
+    "allowlist": {
+      "all": false,
+      "dialog": {
+        "message": true
+      },
+      "shell": {
+        "open": true
+      }
+    }
+  }
+}

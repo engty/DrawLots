@@ -1,0 +1,672 @@
+/* 核心抽签动画样式 */
+.draw-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+    overflow: hidden;
+}
+
+.draw-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    display: flex !important;
+}
+
+.draw-animation-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* 星空动画容器 */
+.starfield-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* 名字星星 */
+.name-star {
+    position: absolute;
+    color: white;
+    font-size: var(--font-body-medium);
+    font-weight: 500;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: starFloat 5s linear infinite;
+    opacity: 0;
+    white-space: nowrap;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.35);
+}
+
+@keyframes starFloat {
+    0% {
+        transform: translateY(0) translateX(0) scale(0.8) rotateZ(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(-20vh) translateX(20px) scale(1) rotateZ(10deg);
+    }
+    30% {
+        transform: translateY(-40vh) translateX(-30px) scale(1.1) rotateZ(-5deg);
+        opacity: 1;
+    }
+    60% {
+        transform: translateY(-70vh) translateX(40px) scale(1.05) rotateZ(15deg);
+        opacity: 0.9;
+    }
+    85% {
+        transform: translateY(-95vh) translateX(-20px) scale(0.9) rotateZ(-10deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-120vh) translateX(30px) scale(0.7) rotateZ(25deg);
+        opacity: 0;
+    }
+}
+
+/* 不同的星星样式 */
+.name-star:nth-child(2n) {
+    background: rgba(124, 58, 237, 0.12);
+    border-color: rgba(124, 58, 237, 0.35);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.35);
+    animation-delay: -0.5s;
+}
+
+.name-star:nth-child(3n) {
+    background: rgba(106, 91, 255, 0.12);
+    border-color: rgba(106, 91, 255, 0.35);
+    box-shadow: 0 0 15px rgba(106, 91, 255, 0.35);
+    animation-delay: -1s;
+}
+
+.name-star:nth-child(4n) {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    animation-delay: -1.5s;
+}
+
+.name-star:nth-child(5n) {
+    animation-delay: -2s;
+}
+
+.name-star:nth-child(6n) {
+    animation-delay: -2.5s;
+}
+
+/* 背景粒子效果增强 */
+.background-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: particleTwinkle 3s linear infinite;
+}
+
+@keyframes particleTwinkle {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+.draw-window {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 48px;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-width: 400px;
+    min-height: 300px;
+    transform: scale(0.9);
+    animation: drawWindowEnter 0.5s ease forwards;
+    z-index: 100;
+}
+
+@keyframes drawWindowEnter {
+    to {
+        transform: scale(1);
+    }
+}
+
+.draw-window h3 {
+    font-size: var(--font-h1);
+    font-weight: 600;
+    color: white;
+    margin-bottom: 32px;
+}
+
+.draw-window p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: var(--font-body-large);
+    margin-bottom: 20px;
+}
+
+/* 姓名滚动器 */
+.name-roller {
+    width: 100%;
+    height: 150px;
+    border-radius: var(--radius-button);
+    background: var(--background);
+    border: 2px solid var(--primary-blue);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.name-roller::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--background) 0%, transparent 100%);
+    z-index: 10;
+}
+
+.name-roller::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to top, var(--background) 0%, transparent 100%);
+    z-index: 10;
+}
+
+.name-list {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+.name-item {
+    font-size: var(--font-h3);
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 8px 0;
+    transition: all 0.1s ease;
+    opacity: 0.7;
+}
+
+.name-item.current {
+    color: var(--primary-blue);
+    font-size: var(--font-h2);
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+.name-item.selected {
+    color: var(--draw-highlight);
+    font-size: var(--font-h1);
+    font-weight: 700;
+    transform: scale(1.2);
+    animation: selectedGlow 1s ease infinite alternate;
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes selectedGlow {
+    from {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    }
+}
+
+/* 粒子效果 */
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--primary-blue);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleFloat 3s linear infinite;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-10px) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.particle:nth-child(odd) {
+    background: var(--primary-purple);
+    animation-delay: -1s;
+}
+
+.particle:nth-child(3n) {
+    background: var(--accent-indigo);
+    animation-delay: -2s;
+}
+
+/* 少量保留非主流程色彩（比例降低） */
+.particle:nth-child(9n) {
+    background: var(--info-cyan);
+}
+
+.particle:nth-child(13n) {
+    background: var(--warning-orange);
+}
+
+/* 滚动动画类 */
+.rolling {
+    animation: nameRoll 0.1s ease-in-out;
+}
+
+@keyframes nameRoll {
+    0% {
+        transform: translateY(-50%);
+    }
+    100% {
+        transform: translateY(-50%) translateY(-40px);
+    }
+}
+
+.rolling-slow {
+    animation: nameRollSlow 0.2s ease-in-out;
+}
+
+@keyframes nameRollSlow {
+    0% {
+        transform: translateY(-50%);
+    }
+    100% {
+        transform: translateY(-50%) translateY(-40px);
+    }
+}
+
+.rolling-slower {
+    animation: nameRollSlower 0.4s ease-in-out;
+}
+
+@keyframes nameRollSlower {
+    0% {
+        transform: translateY(-50%);
+    }
+    100% {
+        transform: translateY(-50%) translateY(-40px);
+    }
+}
+
+/* 选中结果卡片动画 */
+.selected-result {
+    background: var(--card-background);
+    border: 2px solid var(--draw-highlight);
+    border-radius: var(--radius-card);
+    padding: var(--padding-large);
+    margin-top: 24px;
+    animation: resultCardEnter 0.5s ease forwards;
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+@keyframes resultCardEnter {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.selected-name {
+    font-size: var(--font-h1);
+    font-weight: 700;
+    color: var(--draw-highlight);
+    margin-bottom: 8px;
+    animation: nameShine 2s ease infinite;
+}
+
+@keyframes nameShine {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6);
+    }
+}
+
+.selected-info {
+    color: var(--text-secondary);
+    font-size: var(--font-body-regular);
+}
+
+/* 光环效果 */
+.halo-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--draw-highlight);
+    border-radius: 50%;
+    opacity: 0;
+    animation: haloExpand 1s ease-out forwards;
+}
+
+@keyframes haloExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* 页面过渡动画 */
+.page-transition-enter {
+    animation: pageEnter 0.3s ease forwards;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+@keyframes pageEnter {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.page-transition-exit {
+    animation: pageExit 0.3s ease forwards;
+}
+
+@keyframes pageExit {
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+/* 卡片悬停动画 */
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* 按钮点击动画 */
+.btn-click {
+    animation: btnClick 0.2s ease;
+}
+
+@keyframes btnClick {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 成功动画 */
+.success-animation {
+    animation: successPulse 0.6s ease forwards;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 214, 185, 0.7);
+    }
+    70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(0, 214, 185, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 214, 185, 0);
+    }
+}
+
+/* 错误动画 */
+.error-animation {
+    animation: errorShake 0.5s ease forwards;
+}
+
+@keyframes errorShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+/* 删除动画 */
+.delete-animation {
+    animation: deleteSlide 0.3s ease forwards;
+}
+
+@keyframes deleteSlide {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+        height: 0;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+/* 添加动画 */
+.add-animation {
+    animation: addSlide 0.3s ease forwards;
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+@keyframes addSlide {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 脉冲动画 */
+.pulse {
+    animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* 旋转动画 */
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 弹跳动画 */
+.bounce {
+    animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* 渐显动画 */
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* 渐隐动画 */
+.fade-out {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+/* 滑入动画 */
+.slide-in-up {
+    animation: slideInUp 0.3s ease forwards;
+    transform: translateY(30px);
+    opacity: 0;
+}
+
+@keyframes slideInUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 滑入动画 */
+.slide-in-down {
+    animation: slideInDown 0.3s ease forwards;
+    transform: translateY(-30px);
+    opacity: 0;
+}
+
+@keyframes slideInDown {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 响应式动画调整 */
+@media (max-width: 768px) {
+    .draw-window {
+        min-width: 90%;
+        padding: 24px;
+        margin: 20px;
+    }
+    
+    .name-roller {
+        height: 120px;
+    }
+    
+    .name-item {
+        font-size: var(--font-body-regular);
+        padding: 6px 0;
+    }
+    
+    .name-item.current {
+        font-size: var(--font-h3);
+    }
+    
+    .name-item.selected {
+        font-size: var(--font-h2);
+    }
+}
+
+/* 减少动画（用户偏好设置） */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .draw-overlay {
+        transition: none;
+    }
+    
+    .name-item {
+        transition: none;
+    }
+    
+    .particles {
+        display: none;
+    }
+}

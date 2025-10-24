@@ -1,0 +1,14 @@
+{
+  "name": "drawlots-desktop",
+  "version": "0.1.0",
+  "description": "员工满意度调查抽选系统的桌面版封装",
+  "private": true,
+  "scripts": {
+    "tauri:dev": "node tools/run-tauri-dev.js",
+    "build:web": "node tools/prepare-static.js",
+    "tauri:build": "npm run build:web && tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.9"
+  }
+}

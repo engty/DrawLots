@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>广东粤华发电有限责任公司·员工满意度调查人员抽选系统</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="icon" type="image/png" sizes="128x128" href="icons/icon_128.png">
+    <link rel="apple-touch-icon" href="icons/icon_256.png">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <!-- SheetJS for Excel processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- FileSaver.js for file download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-left">
+                <div class="logo">
+                    <i data-feather="users"></i>
+                    <span>抽选系统</span>
+                </div>
+                <h1 class="page-title">员工满意度调查人员抽选系统</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="nav-button" data-action="nav-history">
+                    <i data-feather="clock"></i>
+                    <span>历史记录</span>
+                </button>
+                <button class="nav-button" id="themeToggleBtn" data-action="toggle-theme" aria-label="切换到暗色主题">
+                    <i data-feather="moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主页面内容 -->
+    <main class="main-content" id="homePage">
+        <!-- 文件上传区域 -->
+        <section class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <div class="upload-icon">
+                        <i data-feather="upload-cloud"></i>
+                    </div>
+                    <h3>上传员工花名册</h3>
+                    <p>拖拽Excel文件到此处，或点击选择文件</p>
+                    <p class="upload-hint">仅支持 .xlsx 格式文件</p>
+                    <input type="file" id="fileInput" accept=".xlsx" hidden>
+                    <button class="btn-secondary" data-action="trigger-file">
+                        选择文件
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 文件解析状态 -->
+            <div class="parse-status" id="parseStatus" style="display: none;">
+                <div class="status-content">
+                    <div class="loading-spinner"></div>
+                    <span>正在解析文件...</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 总体统计面板 -->
+        <section class="overview-section" id="overviewSection" style="display: none;">
+            <div class="section-header">
+                <h2>总体统计概览</h2>
+                <button class="btn-secondary btn-small" data-action="reupload-roster">
+                    <i data-feather="upload-cloud"></i>
+                    <span>重新上传花名册</span>
+                </button>
+            </div>
+            <div class="overview-cards">
+                <div class="overview-card">
+                    <div class="overview-chart">
+                        <canvas id="overviewChart" width="200" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="overview-stats">
+                    <div class="overview-stat">
+                        <div class="stat-number" id="rosterTotalStat">0</div>
+                        <div class="stat-label" id="rosterTotalLabel">本季度公司员工花名册总人数</div>
+                        <div class="stat-color primary"></div>
+                    </div>
+                    <div class="overview-stat">
+                        <div class="stat-number" id="eligibleStat">0</div>
+                        <div class="stat-label">参与本次抽签人数（厂领导、部长、内退人员、实习生、不在岗人员不参与调查）</div>
+                        <div class="stat-color success"></div>
+                    </div>
+                    <div class="overview-stat">
+                        <div class="stat-number" id="willDrawStat">0</div>
+                        <div class="stat-label">将抽取人数（按部门总人数匹配）</div>
+                        <div class="stat-color warning"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 部门统计面板 -->
+        <section class="department-section" id="departmentSection" style="display: none;">
+            <h2>部门详细信息</h2>
+            <div class="department-grid" id="departmentGrid">
+                <!-- 部门卡片将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 运行部特殊选择面板 -->
+            <div class="operations-panel" id="operationsPanel" style="display: none;">
+                <h3>运行部分部门选择</h3>
+                <p class="panel-desc">请选择参与本次抽选的运行部分部门：</p>
+                <div class="checkbox-group" id="operationsCheckboxes">
+                    <label class="checkbox-item disabled">
+                        <input type="checkbox" checked disabled>
+                        <span class="checkmark"></span>
+                        <span class="label-text">运行部办公室 (默认参与)</span>
+                    </label>
+                    <label class="checkbox-item disabled">
+                        <input type="checkbox" checked disabled>
+                        <span class="checkmark"></span>
+                        <span class="label-text">运管环化分部 (默认参与)</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="ops-a" value="运行A值">
+                        <span class="checkmark"></span>
+                        <span class="label-text">运行A值</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="ops-b" value="运行B值">
+                        <span class="checkmark"></span>
+                        <span class="label-text">运行B值</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="ops-c" value="运行C值">
+                        <span class="checkmark"></span>
+                        <span class="label-text">运行C值</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="ops-d" value="运行D值">
+                        <span class="checkmark"></span>
+                        <span class="label-text">运行D值</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="ops-f" value="运行F值">
+                        <span class="checkmark"></span>
+                        <span class="label-text">运行F值</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 操作按钮 -->
+        <section class="action-section" id="actionSection" style="display: none;">
+            <div class="action-buttons">
+                <button class="btn-primary" id="startDrawBtn" data-action="start-draw">
+                    <i data-feather="play"></i>
+                    <span>开始抽选</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 抽选结果页面 -->
+    <main class="main-content" id="resultPage" style="display: none;">
+        <!-- 面包屑导航 -->
+        <div class="breadcrumb">
+            <span class="breadcrumb-link" data-action="breadcrumb-home">首页</span>
+            <i data-feather="chevron-right"></i>
+            <span>抽选结果</span>
+        </div>
+
+        <!-- 结果统计 -->
+        <section class="result-summary">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-icon">
+                        <i data-feather="users"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 id="totalSelected">0</h3>
+                        <p>总抽选人数</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">
+                        <i data-feather="building"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 id="departmentCount">0</h3>
+                        <p>涉及部门</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 抽选结果展示 -->
+        <section class="result-section">
+            <div class="result-content" id="resultContent">
+                <!-- 结果内容将通过JavaScript动态生成 -->
+            </div>
+        </section>
+
+        <!-- 操作按钮 -->
+        <section class="action-section">
+            <div class="action-buttons">
+                <button class="btn-secondary" id="supplementBtn" data-action="supplement-draw" style="display: none;">
+                    <i data-feather="plus"></i>
+                    <span>继续补充抽取</span>
+                </button>
+                <button class="btn-success" id="saveBtn" data-action="save-results">
+                    <i data-feather="save"></i>
+                    <span>保存人员名单</span>
+                </button>
+                <button class="btn-secondary" id="exportBtn" data-action="export-results" style="display: none;">
+                    <i data-feather="file-text"></i>
+                    <span>导出抽选结果</span>
+                </button>
+                <button class="btn-secondary" id="copyNamesBtn" data-action="copy-result-names" style="display: none;">
+                    <i data-feather="copy"></i>
+                    <span>复制人员名单</span>
+                </button>
+                <button class="btn-secondary" id="offlineSaveBtn" data-action="offline-save" style="display: none;">
+                    <i data-feather="download"></i>
+                    <span>离线保存</span>
+                </button>
+                <button class="btn-secondary" data-action="nav-home">
+                    <i data-feather="arrow-left"></i>
+                    <span>返回首页</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 历史记录页面 -->
+    <main class="main-content" id="historyPage" style="display: none;">
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <div class="page-title-section">
+                <h2>历史抽选记录</h2>
+                <div class="breadcrumb">
+                    <span data-action="nav-home" class="breadcrumb-link">首页</span>
+                    <i data-feather="chevron-right"></i>
+                    <span>历史记录</span>
+                </div>
+            </div>
+            <div class="page-actions">
+                <button class="btn-secondary" data-action="nav-home">
+                    <i data-feather="home"></i>
+                    <span>返回上传页面</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 历史记录列表 -->
+        <section class="history-section">
+            <div class="history-content" id="historyContent">
+                <!-- 历史记录将通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚版权信息 -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <span>本系统由人力资源部设计与开发 · 数据仅在本地浏览器存储</span>
+            <span class="version-info">v2.1.0</span>
+        </div>
+    </footer>
+
+    <!-- 抽签动画遮罩层 -->
+    <div class="draw-overlay" id="drawOverlay" style="display: none;">
+        <div class="draw-animation-container">
+            <!-- 星空动画容器 -->
+            <div class="starfield-container" id="starfield"></div>
+            
+            <!-- 传统动画窗口（备用） -->
+            <div class="draw-window" id="drawWindow" style="display: none;">
+                <h3>正在进行抽选...</h3>
+                <div class="name-roller" id="nameRoller">
+                    <!-- 滚动的姓名列表 -->
+                </div>
+                <div class="particles" id="particles"></div>
+            </div>
+            
+            <!-- 结果展示窗口 -->
+            <div class="draw-window" id="resultWindow" style="display: none; z-index: 100;">
+                <div class="selected-name" id="starfieldSelectedName">恭喜被选中！</div>
+                <p id="starfieldResultInfo">抽选已完成</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="modalOverlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">记录详情</h3>
+                <button class="modal-close" data-action="modal-close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 弹窗内容 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" data-action="modal-close">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i data-feather="check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="scripts/storage-adapter.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/storage-sync.js"></script>
+    <script src="scripts/data.js"></script>
+    <script src="scripts/draw.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/main.js"></script>
+    
+    <script>
+        // 初始化Feather图标
+        feather.replace();
+        
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+    </script>
+</body>
+</html>
