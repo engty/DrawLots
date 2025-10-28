@@ -1,0 +1,55 @@
+name: Release Builds
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "发布版本号（例如 v0.1.0）"
+        required: true
+        default: "v0.1.0"
+      releaseNotes:
+        description: "Release 说明（可选）"
+        required: false
+
+jobs:
+  build:
+    name: Build on ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, windows-latest]
+    env:
+      RELEASE_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.event.inputs.version }}
+      RELEASE_BODY: ${{ github.event.inputs.releaseNotes || '自动构建的桌面应用包。' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 安装 Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: 缓存 Cargo 构建
+        uses: Swatinem/rust-cache@v2
+
+      - name: 构建并发布
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ env.RELEASE_VERSION }}
+          releaseName: DrawLots ${{ env.RELEASE_VERSION }}
+          releaseBody: ${{ env.RELEASE_BODY }}
+          releaseDraft: false
+          prerelease: false

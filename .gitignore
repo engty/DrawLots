@@ -5,6 +5,8 @@ npm-debug.log*
 # macOS cruft
 .DS_Store
 
+.serena/
+
 # Build outputs
 /dist/
 src-tauri/target/
