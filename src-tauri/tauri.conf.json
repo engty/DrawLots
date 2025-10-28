@@ -23,7 +23,7 @@
     ],
     "bundle": {
       "active": true,
-      "targets": ["app"],
+      "targets": ["app", "msi", "nsis"],
       "identifier": "com.gdhp.drawlots",
       "icon": [
         "../icons/icon.ico",
