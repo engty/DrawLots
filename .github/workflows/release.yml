@@ -42,12 +42,15 @@ jobs:
 
       - name: 缓存 Cargo 构建
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri
 
       - name: 构建并发布
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tauriScript: tauri:build
           tagName: ${{ env.RELEASE_VERSION }}
           releaseName: DrawLots ${{ env.RELEASE_VERSION }}
           releaseBody: ${{ env.RELEASE_BODY }}
