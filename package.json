@@ -4,10 +4,10 @@
   "description": "员工满意度调查抽选系统的桌面版封装",
   "private": true,
   "scripts": {
+    "tauri": "tauri",
     "tauri:dev": "node tools/run-tauri-dev.js",
     "build:web": "node tools/prepare-static.js",
-    "tauri-build": "npm run build:web && tauri build",
-    "tauri:build": "npm run tauri-build"
+    "tauri:build": "npm run tauri -- build"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.9"

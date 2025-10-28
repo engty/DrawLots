@@ -34,13 +34,13 @@ npm run tauri:dev
 ## 打包说明
 ### macOS
 ```bash
-npm run tauri-build
-# 若习惯旧命令也可执行 npm run tauri:build（会转发到同一脚本）
+npm run tauri:build
+# 或直接执行 npm run tauri -- build
 ```
 构建完成后，发行包位于 `src-tauri/target/release/bundle/macos/DrawLots.app`，可直接分发或压缩后共享。
 
 ### Windows
-1. 在 Windows 环境执行 `npm install` 与 `npm run tauri-build`（或 `npm run tauri:build`）。
+1. 在 Windows 环境执行 `npm install` 与 `npm run tauri:build`（或 `npm run tauri -- build`）。
 2. 完成后产物位于 `src-tauri/target/release/bundle/msi/`，包含免安装的 `DrawLots.exe` 与标准安装包 `DrawLots.msi`。
 
 ## 数据目录策略
@@ -53,8 +53,7 @@ npm run tauri-build
 | --- | --- |
 | `npm run tauri:dev` | 启动桌面应用（开发模式，禁用热重载） |
 | `npm run build:web` | 复制静态资源到 `dist/`，供 Tauri 构建使用 |
-| `npm run tauri-build` | 打包桌面发行版（默认生成 macOS `.app`），CI 使用的无冒号脚本 |
-| `npm run tauri:build` | 旧命令，内部转发到 `tauri-build`，可兼容现有习惯 |
+| `npm run tauri:build` | 打包桌面发行版（默认生成 macOS `.app`），等价于 `npm run tauri -- build` |
 | `npx tauri icon <路径>` | 若需替换图标，可用 Tauri 提供的工具重新生成 |
 
 ## 目录结构
