@@ -50,7 +50,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tauriScript: tauri
           tagName: ${{ env.RELEASE_VERSION }}
           releaseName: DrawLots ${{ env.RELEASE_VERSION }}
           releaseBody: ${{ env.RELEASE_BODY }}
