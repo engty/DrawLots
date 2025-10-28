@@ -26,6 +26,7 @@
       "targets": ["app"],
       "identifier": "com.gdhp.drawlots",
       "icon": [
+        "../icons/icon.ico",
         "../icons/icon.icns",
         "../icons/icon_512.png",
         "../icons/icon_256.png",
