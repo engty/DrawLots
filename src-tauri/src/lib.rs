@@ -238,19 +238,19 @@ fn collect_candidate_data_dirs() -> Vec<PathBuf> {
         }
     }
 
-    if let Ok(current_dir) = std::env::current_dir() {
-        let candidate = current_dir.join("data");
-        if let Some(path) = register_candidate(candidate, &mut seen, project_root.as_ref()) {
-            result.push(path);
-        }
-    }
-
     if let Ok(exe_path) = std::env::current_exe() {
         if let Some(exe_dir) = exe_path.parent() {
             let candidate = exe_dir.join("data");
             if let Some(path) = register_candidate(candidate, &mut seen, project_root.as_ref()) {
                 result.push(path);
             }
+        }
+    }
+
+    if let Ok(current_dir) = std::env::current_dir() {
+        let candidate = current_dir.join("data");
+        if let Some(path) = register_candidate(candidate, &mut seen, project_root.as_ref()) {
+            result.push(path);
         }
     }
 
